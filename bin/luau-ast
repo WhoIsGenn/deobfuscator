@@ -1,0 +1,2 @@
+#!/bin/bash
+wine "$(dirname "$0")/luau-ast.exe" "$@"

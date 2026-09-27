@@ -1,0 +1,10 @@
+node_modules/
+token.txt
+*.log
+output/
+*.deobf.luau
+*.path2d
+*.cfg.json
+*.protos.json
+*.strings.txt
+.env
