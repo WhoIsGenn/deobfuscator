@@ -1,0 +1,44 @@
+name: Setup & Run Bot
+
+on:
+  workflow_dispatch:          # run manually from GitHub Actions tab
+  push:
+    branches: [main]
+
+jobs:
+  run-bot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360       # 6 hours (GitHub free tier max)
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Node dependencies
+        run: npm ci
+
+      - name: Make luau binary executable
+        run: chmod +x bin/luau bin/luau-ast 2>/dev/null || true
+
+      - name: Register slash commands
+        run: node bot.js --register
+        env:
+          DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
+          CLIENT_ID:     ${{ secrets.CLIENT_ID }}
+          GUILD_ID:      ${{ secrets.GUILD_ID }}
+
+      - name: Run bot
+        run: node bot.js
+        env:
+          DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
+          CLIENT_ID:     ${{ secrets.CLIENT_ID }}
+          GUILD_ID:      ${{ secrets.GUILD_ID }}
